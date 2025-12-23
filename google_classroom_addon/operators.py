@@ -137,7 +137,14 @@ class GCLASS_OT_RefreshAssignments(Operator):
                 if 'dueDate' in cw:
                     due = cw['dueDate']
                     due_time = cw.get('dueTime', {})
-                    item.due_date = f"{due.get('year', '')}-{due.get('month', '')}-{due.get('day', '')} {due_time.get('hours', '23')}:{due_time.get('minutes', '59')}"
+                    # Only format if all date components are present
+                    if 'year' in due and 'month' in due and 'day' in due:
+                        year = due['year']
+                        month = str(due['month']).zfill(2)
+                        day = str(due['day']).zfill(2)
+                        hours = str(due_time.get('hours', 23)).zfill(2)
+                        minutes = str(due_time.get('minutes', 59)).zfill(2)
+                        item.due_date = f"{year}-{month}-{day} {hours}:{minutes}"
                 
                 # Check for .blend file attachments
                 materials = cw.get('materials', [])

@@ -5,6 +5,30 @@ UI panel classes for Google Classroom add-on
 import bpy
 from bpy.types import Panel
 
+# Text wrapping configuration
+MAX_LINE_LENGTH = 40
+
+def wrap_text(text, layout, max_length=MAX_LINE_LENGTH):
+    """
+    Wrap long text into multiple lines for display in Blender UI
+    
+    Args:
+        text: Text to wrap
+        layout: Blender UI layout to add labels to
+        max_length: Maximum characters per line
+    """
+    words = text.split()
+    line = ""
+    for word in words:
+        if len(line) + len(word) + 1 < max_length:
+            line += word + " "
+        else:
+            if line:
+                layout.label(text=line)
+            line = word + " "
+    if line:
+        layout.label(text=line)
+
 class GCLASS_PT_MainPanel(Panel):
     """Main Google Classroom panel"""
     bl_label = "Google Classroom"
@@ -39,17 +63,7 @@ class GCLASS_PT_MainPanel(Panel):
         if props.error_message:
             box = layout.box()
             box.label(text="Error:", icon='ERROR')
-            # Split long error messages
-            words = props.error_message.split()
-            line = ""
-            for word in words:
-                if len(line) + len(word) + 1 < 40:
-                    line += word + " "
-                else:
-                    box.label(text=line)
-                    line = word + " "
-            if line:
-                box.label(text=line)
+            wrap_text(props.error_message, box)
         
         # Info section
         if props.is_authenticated:
@@ -158,21 +172,11 @@ class GCLASS_PT_AssignmentsPanel(Panel):
                 if assignment.description:
                     box.separator()
                     box.label(text="Description:", icon='TEXT')
-                    # Split description into lines
+                    # Split description into lines and show first 3
                     desc_lines = assignment.description.split('\n')
-                    for line in desc_lines[:3]:  # Show first 3 lines
-                        if len(line) > 40:
-                            # Wrap long lines
-                            words = line.split()
-                            display_line = ""
-                            for word in words:
-                                if len(display_line) + len(word) + 1 < 40:
-                                    display_line += word + " "
-                                else:
-                                    box.label(text=display_line)
-                                    display_line = word + " "
-                            if display_line:
-                                box.label(text=display_line)
+                    for line in desc_lines[:3]:
+                        if len(line) > MAX_LINE_LENGTH:
+                            wrap_text(line, box)
                         else:
                             box.label(text=line)
                     if len(desc_lines) > 3:
