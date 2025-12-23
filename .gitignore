@@ -1,0 +1,28 @@
+# Credentials and tokens
+google_classroom_addon/config/credentials.json
+google_classroom_addon/config/token.pickle
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Blender
+*.blend1
+*.blend2
