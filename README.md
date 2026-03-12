@@ -1,88 +1,79 @@
-# Blender Classroom Add-on
+# Blender GitHub Classroom Add-on
 
-A Blender 4.5 LTS add-on that integrates **Google Classroom** and **GitHub Classroom** directly into Blender, making it easy for students to access assignments, download .blend files, and submit completed work without leaving the 3D environment.
+A Blender 4.5 LTS add-on that integrates **GitHub Classroom** directly into Blender, making it easy for students to pull assignment .blend files, work on them, and push their changes back — all without leaving the 3D environment. Teachers can also use the add-on to pull student files for review and grading.
 
 ## Overview
 
-This add-on is designed for computer animation classes that use Blender. It supports two classroom platforms:
+This add-on is designed for animation and 3D art courses that use Blender. It connects to **GitHub Classroom** using a simple Personal Access Token — no complex setup or cloud admin access required.
 
-### Google Classroom
-- Requires Google Cloud Console access for OAuth credentials
-- Viewing Google Classroom assignments directly in Blender
-- Downloading starter .blend files attached to assignments
-- Submitting completed assignments back to Google Classroom
-- Tracking assignment status and due dates
+### For Students
+- 📥 **Pull** your assignment .blend file from your GitHub Classroom repository
+- 🎨 Work on your project in Blender as usual
+- 📤 **Auto-push** your changes to GitHub every time you save (or push manually)
+- No programming knowledge required — just enter your token and go!
 
-### GitHub Classroom (No Cloud Console Required)
-- Uses a GitHub Personal Access Token — **no admin or cloud console access needed**
-- Viewing GitHub Classroom assignment repositories in Blender
-- Downloading starter .blend files from assignment repos
-- Submitting completed work by pushing to the assignment repo
-- Works with any GitHub Classroom organization
+### For Teachers
+- 📂 **Browse** all student repositories in your GitHub Classroom organization
+- 📥 **Pull** any student's .blend file to review their progress
+- Grade work by opening student files directly in Blender
+- Monitor student progress throughout projects
 
 ## Quick Start
 
-### GitHub Classroom (Recommended if you lack Google Cloud Console access)
+### Students
 
-1. Install the add-on in Blender (Edit > Preferences > Add-ons)
-2. Open the **Classroom** sidebar panel (View3D > Sidebar > Classroom)
-3. Select **GitHub Classroom** as the platform
+1. Install the add-on in Blender (Edit → Preferences → Add-ons → Install)
+2. Open the **Classroom** sidebar panel (press N in the 3D Viewport → Classroom tab)
+3. Select **Student** as your role
 4. Create a [GitHub Personal Access Token](https://github.com/settings/tokens) with the **repo** scope
-5. Enter your token and sign in
-6. Enter your classroom organization name
-7. Browse assignment repos and open/submit .blend files
+5. Enter your token and click **Sign In**
+6. Enter your classroom organization name and click **Load My Assignments**
+7. Select a repository and click **Open Assignment** to download and open your .blend file
+8. Work on your project — your changes are **automatically pushed to GitHub when you save**!
 
-### Google Classroom
+### Teachers
 
-1. Install Python dependencies into Blender's Python environment
-2. Install the add-on in Blender (Edit > Preferences > Add-ons)
-3. Set up Google API credentials (see [INSTALL_GUIDE.md](INSTALL_GUIDE.md))
-4. Select **Google Classroom** as the platform
-5. Sign in with your Google account
-6. Browse courses and assignments
-
-## Documentation
-
-For detailed installation and setup instructions, see [INSTALL_GUIDE.md](INSTALL_GUIDE.md)
-
-## Features
-
-### For Students
-- 📚 View active courses / assignment repos
-- 📝 Browse assignments with due dates
-- 📥 Download .blend assignment files with one click
-- 📤 Submit completed work directly from Blender
-- ✅ Track submission status
-
-### For Teachers
-- Easy distribution of starter files
-- Streamlined assignment collection
-- Works with existing Google Classroom or GitHub Classroom workflow
-- GitHub Classroom requires no special cloud admin access
+1. Install the add-on in Blender (Edit → Preferences → Add-ons → Install)
+2. Open the **Classroom** sidebar panel (press N in the 3D Viewport → Classroom tab)
+3. Select **Teacher** as your role
+4. Sign in with your GitHub Personal Access Token
+5. Enter your classroom organization name and click **Load Student Repos**
+6. Select a student's repository and click **Open for Review**
 
 ## Requirements
 
 - Blender 4.5 LTS or later
 - Internet connection
-- **For GitHub Classroom:** A GitHub account and Personal Access Token
-- **For Google Classroom:** Google Classroom account and Google Cloud project with API credentials
+- A GitHub account and [Personal Access Token](https://github.com/settings/tokens) with the **repo** scope
+- **No external Python dependencies required** — uses only Python standard library
+
+## Documentation
+
+- [INSTALL_GUIDE.md](INSTALL_GUIDE.md) — Detailed installation instructions
+- [TEACHER_GUIDE.md](TEACHER_GUIDE.md) — Teacher setup and grading workflow
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) — Daily usage quick reference
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) — Common issues and solutions
 
 ## Project Structure
 
 ```
-google_classroom_addon/
-├── __init__.py              # Add-on entry point
-├── properties.py            # Blender property definitions
-├── operators.py             # User action handlers (Google + GitHub)
-├── ui.py                    # UI panel definitions (Google + GitHub)
-├── api_client.py            # Google Classroom API client
-├── github_client.py         # GitHub Classroom API client
-├── requirements.txt         # Python dependencies (Google mode only)
-├── install_dependencies.py  # Dependency installer helper
+github_classroom_addon/
+├── __init__.py          # Add-on entry point and registration
+├── properties.py        # Blender property definitions
+├── operators.py         # User action handlers and save handler
+├── ui.py                # UI panel definitions
+├── github_client.py     # GitHub API client (stdlib only)
 └── config/
-    ├── credentials.json.template  # Google OAuth credentials template
-    └── README.md                  # Configuration guide
+    └── README.md        # Configuration guide
 ```
+
+## How It Works
+
+1. **Authentication**: Students and teachers sign in with a GitHub Personal Access Token
+2. **Repository Listing**: Students see their own assignment repos; teachers see all repos in the organization
+3. **File Operations**: .blend files are downloaded from GitHub and opened in Blender
+4. **Auto-Push**: When students save their work (Ctrl+S), changes are automatically pushed back to their GitHub repository
+5. **Teacher Review**: Teachers can pull any student's file to review progress and grade work
 
 ## Contributing
 
@@ -90,8 +81,4 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 
 ## License
 
-This project is provided as-is for educational purposes. Please ensure compliance with your institution's policies, Google's Terms of Service, and GitHub's Terms of Service.
-
-## Support
-
-For detailed documentation, troubleshooting, and setup instructions, see [INSTALL_GUIDE.md](INSTALL_GUIDE.md)
+This project is provided as-is for educational purposes. Please ensure compliance with your institution's policies and GitHub's Terms of Service.

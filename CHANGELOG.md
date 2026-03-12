@@ -1,47 +1,43 @@
 # Changelog
 
-All notable changes to the Google Classroom Blender Add-on will be documented in this file.
+All notable changes to the GitHub Classroom Blender Add-on will be documented in this file.
+
+## [2.0.0] - 2025-01-15
+
+### Changed
+- **Converted from Google Classroom to GitHub Classroom only**
+- Renamed add-on from "Classroom Integration" to "GitHub Classroom"
+- Renamed package from `google_classroom_addon` to `github_classroom_addon`
+- Simplified UI for non-programmer students (art/animation students)
+- Removed platform toggle (GitHub Classroom is now the only platform)
+
+### Added
+- **Student/Teacher role selector** for role-specific workflows
+- **Auto-push on save**: Student work is automatically pushed to GitHub when saving (Ctrl+S)
+- **Teacher repository browsing**: Teachers can see all student repos in the org for grading
+- **Working file tracking**: Addon remembers which repo/file you're working on
+- **Toggle auto-push**: Students can enable/disable auto-push from the UI
+- **Disconnect button**: Students can disconnect from the current repo
+
+### Removed
+- Google Classroom integration (api_client.py)
+- Google OAuth credentials template and setup
+- Python dependency requirements (requirements.txt) — addon now uses only stdlib
+- Dependency installation helper (install_dependencies.py)
+- Platform selection toggle (Google/GitHub)
+- Google Classroom courses and assignments panels
+
+### Security
+- Local-only token storage (GitHub Personal Access Token)
+- Working file config stored locally
+- No external Python dependencies required
+
+### Compatibility
+- Blender 4.5 LTS or later
+- GitHub API v3
+- Python 3.11+ (included with Blender)
 
 ## [1.0.0] - 2024-12-23
 
 ### Added
-- Initial release of Google Classroom Blender Add-on
-- OAuth2 authentication with Google Classroom
-- View active Google Classroom courses
-- Browse assignments for selected courses
-- Download .blend files attached to assignments
-- Submit completed assignments directly from Blender
-- Track assignment due dates and submission status
-- User-friendly UI in Blender's 3D Viewport sidebar
-- Comprehensive documentation:
-  - Installation guide (INSTALL_GUIDE.md)
-  - Teacher setup guide (TEACHER_GUIDE.md)
-  - README with quick start
-- Dependency installation helper script
-- OAuth credentials template
-
-### Features
-- **Authentication Panel**: Sign in/out with Google account
-- **Courses Panel**: List and select from active courses
-- **Assignments Panel**: View assignments with details
-- **Status Tracking**: See submission status and due dates
-- **File Operations**: Download and open .blend files
-- **Submit Workflow**: Save and submit work in one step
-
-### Security
-- Local-only token storage
-- OAuth2 secure authentication
-- Minimal required API permissions
-- Credentials kept in config directory
-
-### Compatibility
-- Blender 4.5 LTS
-- Google Classroom API v1
-- Google Drive API v3
-- Python 3.11+
-
-### Dependencies
-- google-auth>=2.23.0
-- google-auth-oauthlib>=1.1.0
-- google-auth-httplib2>=0.1.1
-- google-api-python-client>=2.100.0
+- Initial release with Google Classroom and GitHub Classroom support
