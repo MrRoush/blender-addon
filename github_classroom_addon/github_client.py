@@ -1,6 +1,7 @@
 """
 GitHub Classroom API client module
-Handles authentication and API calls to GitHub for classroom integration
+Handles authentication and API calls to GitHub for classroom integration.
+Uses only Python standard library (no external dependencies required).
 """
 
 import os
@@ -21,6 +22,12 @@ class GitHubClassroomClient:
         self.username = None
         self.config_dir = self._get_config_dir()
         self.token_file = os.path.join(self.config_dir, 'github_token.json')
+        self.working_file_config = os.path.join(
+            self.config_dir, 'working_file.json'
+        )
+        self.working_file = None
+        self.auto_push = True
+        self._load_working_file()
 
     def _get_config_dir(self) -> str:
         """Get configuration directory for storing credentials"""
@@ -57,7 +64,7 @@ class GitHubClassroomClient:
 
     def authenticate(self, token: Optional[str] = None) -> Tuple[bool, str]:
         """
-        Authenticate with GitHub using a Personal Access Token
+        Authenticate with GitHub using a Personal Access Token.
         Returns: (success, message)
         """
         try:
@@ -87,7 +94,7 @@ class GitHubClassroomClient:
             self.token = None
             self.username = None
             if e.code == 401:
-                return False, "Invalid token. Please check your Personal Access Token."
+                return False, "Invalid token. Please check your token."
             return False, f"Authentication failed: HTTP {e.code}"
         except Exception as e:
             self.token = None
@@ -100,18 +107,18 @@ class GitHubClassroomClient:
             os.remove(self.token_file)
         self.token = None
         self.username = None
+        self.clear_working_file()
 
     def get_repos(self, org_name: str) -> Tuple[bool, List[Dict[str, Any]], str]:
         """
         Get assignment repos for the authenticated user in an organization.
-        GitHub Classroom creates repos with the student's username in the name.
+        Used by students to see their own assignment repositories.
         Returns: (success, repos_list, error_message)
         """
         if not self.is_authenticated():
             return False, [], "Not authenticated"
 
         try:
-            # Get repos the user has access to as collaborator or org member
             all_repos = []
             page = 1
             while True:
@@ -141,10 +148,43 @@ class GitHubClassroomClient:
         except Exception as e:
             return False, [], f"Error fetching repos: {str(e)}"
 
+    def get_org_repos(self, org_name: str) -> Tuple[bool, List[Dict[str, Any]], str]:
+        """
+        Get ALL repos in an organization (for teachers).
+        Teachers can see all student assignment repositories in the classroom org.
+        Returns: (success, repos_list, error_message)
+        """
+        if not self.is_authenticated():
+            return False, [], "Not authenticated"
+
+        try:
+            all_repos = []
+            page = 1
+            while True:
+                repos = self._make_request(
+                    f'/orgs/{org_name}/repos?per_page=100&page={page}'
+                    f'&sort=updated&direction=desc'
+                )
+                if not repos:
+                    break
+                all_repos.extend(repos)
+                if len(repos) < 100:
+                    break
+                page += 1
+
+            return True, all_repos, ""
+
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return False, [], f"Organization '{org_name}' not found"
+            return False, [], f"API error: HTTP {e.code}"
+        except Exception as e:
+            return False, [], f"Error fetching org repos: {str(e)}"
+
     def find_blend_files(self, owner: str, repo: str,
                          path: str = '') -> Tuple[bool, List[Dict[str, Any]], str]:
         """
-        Find .blend files in a repository
+        Find .blend files in a repository.
         Returns: (success, blend_files_list, error_message)
         """
         if not self.is_authenticated():
@@ -175,7 +215,7 @@ class GitHubClassroomClient:
     def download_file(self, owner: str, repo: str, file_path: str,
                       destination: str) -> Tuple[bool, str]:
         """
-        Download a file from a GitHub repository
+        Download a file from a GitHub repository.
         Returns: (success, error_message)
         """
         if not self.is_authenticated():
@@ -212,9 +252,9 @@ class GitHubClassroomClient:
 
     def upload_file(self, owner: str, repo: str, file_path: str,
                     local_path: str,
-                    message: str = "Submit assignment from Blender") -> Tuple[bool, str]:
+                    message: str = "Save from Blender") -> Tuple[bool, str]:
         """
-        Upload or update a file in a GitHub repository (creates a commit)
+        Upload or update a file in a GitHub repository (creates a commit).
         Returns: (success, error_message)
         """
         if not self.is_authenticated():
@@ -241,7 +281,8 @@ class GitHubClassroomClient:
                 'content': content,
                 'committer': {
                     'name': self.username or 'Blender User',
-                    'email': f'{self.username or "blender"}@users.noreply.github.com',
+                    'email': (f'{self.username or "blender"}'
+                              f'@users.noreply.github.com'),
                 },
             }
             if sha:
@@ -259,6 +300,51 @@ class GitHubClassroomClient:
             return False, f"Upload error: HTTP {e.code}"
         except Exception as e:
             return False, f"Error uploading file: {str(e)}"
+
+    # --- Working file management (for auto-push on save) ---
+
+    def set_working_file(self, repo_owner: str, repo_name: str,
+                         file_path: str):
+        """Set the current working file info for auto-push"""
+        self.working_file = {
+            'repo_owner': repo_owner,
+            'repo_name': repo_name,
+            'file_path': file_path,
+        }
+        self._save_working_file()
+
+    def get_working_file(self) -> Optional[Dict[str, str]]:
+        """Get the current working file info"""
+        return self.working_file
+
+    def clear_working_file(self):
+        """Clear the current working file info"""
+        self.working_file = None
+        if os.path.exists(self.working_file_config):
+            os.remove(self.working_file_config)
+
+    def set_auto_push(self, enabled: bool):
+        """Enable or disable auto-push on save"""
+        self.auto_push = enabled
+        self._save_working_file()
+
+    def _save_working_file(self):
+        """Save working file info to config"""
+        if self.working_file:
+            data = {**self.working_file, 'auto_push': self.auto_push}
+            with open(self.working_file_config, 'w') as f:
+                json.dump(data, f)
+
+    def _load_working_file(self):
+        """Load working file info from config"""
+        if os.path.exists(self.working_file_config):
+            try:
+                with open(self.working_file_config, 'r') as f:
+                    data = json.load(f)
+                    self.auto_push = data.pop('auto_push', True)
+                    self.working_file = data
+            except (json.JSONDecodeError, IOError):
+                self.working_file = None
 
 
 # Global client instance

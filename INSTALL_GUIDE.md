@@ -1,179 +1,98 @@
-# Google Classroom Blender Add-on
+# GitHub Classroom Blender Add-on — Installation Guide
 
-A Blender add-on that integrates Google Classroom into Blender 4.5 LTS, allowing students and teachers to manage assignments directly from within Blender.
+A Blender add-on that integrates GitHub Classroom into Blender 4.5 LTS, allowing students and teachers to manage animation assignments directly from within Blender.
 
 ## Features
 
-- **Authentication**: Sign in with your Google account
-- **View Courses**: List all your active Google Classroom courses
-- **View Assignments**: Browse assignments for each course
-- **Download Files**: Automatically download .blend files attached to assignments
-- **Submit Work**: Save and submit your completed assignments directly from Blender
-- **Assignment Tracking**: View due dates and submission status
+- **Simple Sign-In**: Authenticate with a GitHub Personal Access Token (no complex setup)
+- **Student/Teacher Roles**: Role-based interface for students and teachers
+- **Pull Assignments**: Download .blend files from your GitHub Classroom repository
+- **Auto-Push on Save**: Student work is automatically pushed to GitHub when saving
+- **Teacher Review**: Teachers can browse and pull any student's work for grading
+- **No External Dependencies**: Uses only Python standard library
 
 ## Installation
 
-### Step 1: Install Python Dependencies
+### Step 1: Install the Add-on
 
-The add-on requires several Google API libraries. Since Blender uses its own Python installation, you need to install these packages into Blender's Python environment.
-
-#### On Windows:
-```bash
-# Navigate to Blender's Python directory (adjust version number as needed)
-cd "C:\Program Files\Blender Foundation\Blender 4.5\4.5\python\bin"
-
-# Install dependencies
-.\python.exe -m pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-```
-
-#### On macOS:
-```bash
-# Navigate to Blender's Python directory
-cd /Applications/Blender.app/Contents/Resources/4.5/python/bin
-
-# Install dependencies
-./python3.11 -m pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-```
-
-#### On Linux:
-```bash
-# Navigate to Blender's Python directory (adjust version and path as needed)
-cd /usr/share/blender/4.5/python/bin
-
-# Install dependencies
-./python3.11 -m pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-```
-
-### Step 2: Install the Add-on
+No Python dependencies need to be installed! The add-on uses only the standard library.
 
 1. Download or clone this repository
-2. In Blender, go to **Edit > Preferences > Add-ons**
-3. Click **Install** and navigate to the `google_classroom_addon` folder
-4. Select the folder or zip it and select the zip file
-5. Enable the add-on by checking the box next to "System: Google Classroom Integration"
+2. In Blender, go to **Edit → Preferences → Add-ons**
+3. Click **Install** and navigate to the `github_classroom_addon` folder
+4. Select the folder (or zip it first and select the zip file)
+5. Enable the add-on by checking the box next to **"System: GitHub Classroom"**
 
-### Step 3: Set Up Google API Credentials
+### Step 2: Create a GitHub Personal Access Token
 
-To use this add-on, you need to set up a Google Cloud project and obtain OAuth 2.0 credentials:
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Click **Generate new token (classic)**
+3. Give it a name like **"Blender Classroom"**
+4. Select the **repo** scope (full control of private repositories)
+5. Click **Generate token**
+6. **Copy the token** — you won't be able to see it again!
 
-1. **Create a Google Cloud Project**:
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-
-2. **Enable Required APIs**:
-   - In the Google Cloud Console, enable the following APIs:
-     - Google Classroom API
-     - Google Drive API
-
-3. **Create OAuth 2.0 Credentials**:
-   - Go to **APIs & Services > Credentials**
-   - Click **Create Credentials > OAuth client ID**
-   - Choose **Desktop app** as the application type
-   - Download the credentials JSON file
-
-4. **Add Credentials to Add-on**:
-   - Rename the downloaded file to `credentials.json`
-   - Place it in: `google_classroom_addon/config/credentials.json`
-   - The full path should be: `<blender_config>/scripts/addons/google_classroom_addon/config/credentials.json`
+> **Tip for teachers**: You can walk students through this process in class. It takes about 2 minutes.
 
 ## Usage
 
-### First-Time Setup
+### For Students
+
+#### First-Time Setup
 
 1. Open Blender
-2. In the 3D Viewport, press `N` to open the sidebar
-3. Click on the **Google Classroom** tab
-4. Click **Sign In with Google**
-5. Your browser will open for authentication
-6. Sign in with your Google account and grant permissions
-7. Return to Blender - you're now authenticated!
+2. Press `N` to open the sidebar in the 3D Viewport
+3. Click the **Classroom** tab
+4. Select **Student** as your role
+5. Paste your GitHub token and click **Sign In**
+6. Enter your classroom organization name (your teacher will provide this)
+7. Click **Load My Assignments**
 
-### Viewing Courses and Assignments
+#### Daily Workflow
 
-1. After signing in, click **Refresh Courses** to load your courses
-2. Expand the **Courses** section to see all your active courses
-3. Click on a course name to select it
-4. Click **Refresh Assignments** to load assignments for that course
-5. Expand the **Assignments** section to see all assignments
+1. Open Blender → Press `N` → **Classroom** tab
+2. (If needed) Sign in with your token
+3. Click **Load My Assignments** to see your repos
+4. Select an assignment and click **Open Assignment**
+5. Work on your project as usual
+6. **Save your file (Ctrl+S)** — changes are automatically pushed to GitHub!
+7. You can also manually click **Save & Push to GitHub** at any time
 
-### Opening an Assignment
+### For Teachers
 
-1. Select an assignment from the list
-2. If the assignment has a .blend file attached, you'll see it listed
-3. Click **Open Assignment File** to download and open it in Blender
-4. The file will open automatically in Blender
+#### Setup
 
-### Submitting an Assignment
+1. Open Blender → Press `N` → **Classroom** tab
+2. Select **Teacher** as your role
+3. Sign in with your GitHub token
+4. Enter your GitHub Classroom organization name
+5. Click **Load Student Repos** to see all student repositories
 
-1. After completing your work, **save your file** (File > Save or Ctrl+S)
-2. Select the assignment you want to submit
-3. Click **Submit Assignment**
-4. The add-on will upload your .blend file and mark the assignment as turned in
+#### Reviewing Student Work
+
+1. Browse the list of student repositories
+2. Select a student's repo
+3. Click **Open for Review** to download and open their .blend file
+4. Review their work in Blender
+5. Use **File → Save As** to save a local copy if needed
 
 ### Status Messages
 
-- **Green info boxes**: Show successful operations and current status
+- **Blue info boxes**: Show successful operations and current status
 - **Red error boxes**: Display any errors that occur
-- Watch for submission status indicators (e.g., "Already Submitted")
-
-## Troubleshooting
-
-### "Google API libraries not installed" Error
-- Make sure you installed the dependencies into Blender's Python (see Step 1 above)
-- Restart Blender after installing dependencies
-
-### "Credentials file not found" Error
-- Ensure `credentials.json` is in the correct location: `google_classroom_addon/config/credentials.json`
-- Check that the file is not named `credentials.json.txt`
-
-### Authentication Window Doesn't Open
-- Check your firewall settings
-- Try running Blender as administrator (Windows) or with sudo (Linux)
-- Ensure port 8080 is not blocked
-
-### "No courses found" or "No assignments found"
-- Verify you're enrolled in courses on Google Classroom
-- Check that the courses are active (not archived)
-- Try refreshing the list
-
-### Can't Submit Assignment
-- Make sure you've saved your file first (File > Save)
-- Check that you have permission to submit to the course
-- Verify the assignment hasn't passed its due date
-
-## For Teachers
-
-### Setting Up for Your Class
-
-1. Create a Google Cloud project for your class
-2. Generate OAuth 2.0 credentials
-3. Distribute the credentials.json file to your students (via secure method)
-4. Provide students with installation instructions
-5. Create assignments in Google Classroom and attach starter .blend files
-
-### Best Practices
-
-- Attach a template .blend file to each assignment
-- Set clear due dates in Google Classroom
-- Use assignment descriptions to provide detailed instructions
-- Test the add-on yourself before deploying to students
 
 ## Privacy and Security
 
-- Authentication tokens are stored locally in `google_classroom_addon/config/`
-- The add-on only requests necessary permissions:
-  - Read courses and assignments
-  - Read and upload student submissions
-  - Access Drive files attached to assignments
+- Authentication tokens are stored locally in `github_classroom_addon/config/`
+- The add-on only requires the **repo** scope on GitHub
 - No data is sent to third parties
-- Students can revoke access at any time via Google Account settings
+- Students and teachers can revoke their token at any time on GitHub
 
 ## System Requirements
 
 - Blender 4.5 LTS or later
 - Internet connection
-- Google Classroom account (student or teacher)
-- Python 3.11+ (included with Blender)
+- A GitHub account and Personal Access Token with the **repo** scope
 
 ## Support
 
@@ -181,8 +100,4 @@ For issues, questions, or feature requests, please open an issue on the [GitHub 
 
 ## License
 
-This add-on is provided as-is for educational purposes. Please ensure compliance with your institution's policies and Google's Terms of Service when using this add-on.
-
-## Credits
-
-Developed for computer animation classes using Blender and Google Classroom.
+This add-on is provided as-is for educational purposes. Please ensure compliance with your institution's policies and GitHub's Terms of Service.

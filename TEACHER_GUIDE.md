@@ -1,217 +1,188 @@
-# Quick Start Guide for Teachers
+# Teacher Guide — GitHub Classroom Blender Add-on
 
-This guide helps teachers set up the Google Classroom Blender Add-on for their classes.
+This guide helps teachers set up and use the GitHub Classroom Blender Add-on for animation and 3D art courses.
 
 ## Overview
 
-The add-on allows students to:
-1. View Google Classroom assignments in Blender
-2. Download starter .blend files you attach to assignments
-3. Submit completed work directly from Blender
-4. Track assignment status and due dates
+The add-on allows:
+
+**Students to:**
+1. Pull their assignment .blend files from GitHub Classroom
+2. Work on their projects in Blender
+3. Automatically push changes back to GitHub when they save
+4. No programming knowledge required
+
+**Teachers to:**
+1. Browse all student repositories in the classroom organization
+2. Pull any student's .blend file to review their progress
+3. Grade work by opening student files directly in Blender
+4. Monitor progress throughout projects
 
 ## Initial Setup (One-Time)
 
-### 1. Create a Google Cloud Project
+### 1. Set Up GitHub Classroom
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Click "New Project" and give it a name (e.g., "Animation Class 2024")
-3. Wait for the project to be created
+If you haven't already:
+1. Go to [classroom.github.com](https://classroom.github.com/)
+2. Create an organization for your class (or use an existing one)
+3. Create assignments — GitHub Classroom will create a repo for each student
 
-### 2. Enable Required APIs
+### 2. Prepare Assignment Repos
 
-1. In your project, go to **APIs & Services > Library**
-2. Search for and enable:
-   - **Google Classroom API**
-   - **Google Drive API**
+1. Create a **template repository** with a starter .blend file
+2. In GitHub Classroom, create an assignment using that template
+3. When students accept the assignment, they get their own copy of the repo
 
-### 3. Configure OAuth Consent Screen
+### 3. Create Your Personal Access Token
 
-1. Go to **APIs & Services > OAuth consent screen**
-2. Choose **Internal** if using Google Workspace (recommended for schools)
-   - Or **External** if using regular Gmail accounts
-3. Fill in the required information:
-   - App name: "Google Classroom Blender Integration"
-   - User support email: Your email
-   - Developer contact: Your email
-4. Click **Save and Continue**
-5. On the Scopes page, click **Save and Continue** (no need to add scopes manually)
-6. Review and click **Back to Dashboard**
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Click **Generate new token (classic)**
+3. Name it "Blender Classroom"
+4. Select the **repo** scope
+5. Click **Generate token** and copy it
 
-### 4. Create OAuth 2.0 Credentials
+### 4. Install the Add-on in Blender
 
-1. Go to **APIs & Services > Credentials**
-2. Click **Create Credentials > OAuth client ID**
-3. Choose **Desktop app** as the application type
-4. Name it "Blender Add-on"
-5. Click **Create**
-6. **Download** the JSON file (click the download icon)
-7. Rename it to `credentials.json`
+1. Download or clone the repository
+2. In Blender: **Edit → Preferences → Add-ons → Install**
+3. Select the `github_classroom_addon` folder
+4. Enable the add-on
 
-### 5. Distribute to Students
-
-You have two options:
-
-#### Option A: Shared Credentials (Easier)
-1. Share the `credentials.json` file with all students via:
-   - Google Classroom attachment
-   - School file server
-   - Email (be aware this is less secure)
-2. Each student will authenticate with their own Google account
-3. Students place the file in: `google_classroom_addon/config/credentials.json`
-
-#### Option B: Individual Setup (More Secure)
-1. Share instructions for students to create their own Google Cloud projects
-2. Each student creates their own OAuth credentials
-3. More secure but requires more student technical knowledge
-
-## Preparing Assignments
-
-### Creating an Assignment with a Starter File
-
-1. In Google Classroom, create a new assignment as usual
-2. Click **Add** and choose **Google Drive**
-3. Upload your starter .blend file
-4. Set the file sharing to "Students can view file"
-5. Add assignment details, due date, and instructions
-6. Click **Assign**
-
-### Best Practices
-
-- **File Naming**: Use descriptive names like `assignment_01_character_modeling.blend`
-- **Templates**: Include basic scene setup students need to start
-- **Instructions**: Provide clear step-by-step instructions in the description
-- **Due Dates**: Always set due dates so students can prioritize
-- **Test First**: Test the workflow yourself before assigning to students
+**No Python dependencies to install!** The add-on uses only the standard library.
 
 ## Teaching Students to Use the Add-on
 
-### First Day Setup (15-20 minutes)
+### First Day Setup (10-15 minutes)
 
-1. **Install Dependencies** (5 min)
-   - Walk through installing Python packages into Blender
-   - Have students run `install_dependencies.py` or manually install
+1. **Install Add-on** (3 min)
+   - Walk students through Edit → Preferences → Add-ons → Install
+   - Enable the add-on
 
-2. **Install Add-on** (3 min)
-   - Show how to install via Edit > Preferences > Add-ons
-   - Demonstrate enabling the add-on
+2. **Create GitHub Token** (5 min)
+   - Guide students to github.com/settings/tokens
+   - Help them create a token with the **repo** scope
+   - **Important**: Tell them to save their token somewhere safe!
 
-3. **Add Credentials** (3 min)
-   - Show where to place `credentials.json`
-   - Verify the file location
+3. **First Sign-In** (3 min)
+   - Press N → Classroom tab
+   - Select "Student" role
+   - Paste token and sign in
+   - Enter the organization name
 
-4. **First Authentication** (5 min)
-   - Guide students through signing in
-   - Address any authentication issues
-   - Show how to grant permissions
+4. **Quick Demo** (4 min)
+   - Click "Load My Assignments"
+   - Open an assignment
+   - Save (Ctrl+S) — show that it auto-pushes to GitHub
 
-5. **Quick Demo** (4 min)
-   - Demonstrate viewing courses
-   - Show opening an assignment
-   - Show submitting work
+### Regular Student Workflow
 
-### Regular Workflow (Students)
+1. Open Blender → Press `N` → **Classroom** tab
+2. Sign in (if needed)
+3. Click **Load My Assignments**
+4. Select assignment → **Open Assignment**
+5. Work on project
+6. **Save (Ctrl+S)** — auto-pushes to GitHub!
+7. Done!
 
-1. Open Blender
-2. Press `N` to open sidebar
-3. Go to Google Classroom tab
-4. (If needed) Sign in
-5. Refresh courses and select their class
-6. Refresh assignments
-7. Select and open assignment
-8. Complete work
-9. Save file (Ctrl+S)
-10. Submit assignment
+## Reviewing Student Work
+
+### Using the Add-on (Recommended)
+
+1. Open Blender → Press `N` → **Classroom** tab
+2. Select **Teacher** as your role
+3. Sign in with your GitHub token
+4. Enter your classroom organization name
+5. Click **Load Student Repos**
+6. Browse the list of student repositories
+7. Select a student's repo → **Open for Review**
+8. Review their work in Blender
+9. Use **File → Save As** to keep a local copy if needed
+
+### Using GitHub Directly
+
+You can also review student work through GitHub:
+1. Go to your GitHub Classroom organization
+2. Browse student repos
+3. Download .blend files directly
+4. Open them in Blender
+
+The add-on simply makes this process faster and keeps you in Blender.
 
 ## Troubleshooting Common Student Issues
 
-### "Google API libraries not installed"
-- Student needs to install dependencies
-- Point them to `install_dependencies.py` or manual installation
-- Have them restart Blender
+### "No token provided"
+- Student needs to create a Personal Access Token
+- Guide them to github.com/settings/tokens
+- Make sure they select the **repo** scope
 
-### "Credentials file not found"
-- Check file location and name
-- Verify it's `credentials.json` not `credentials.json.txt`
-- Make sure it's in the `config` folder
+### "Invalid token"
+- Token may have expired or been revoked
+- Have them create a new token
 
-### "No courses found"
-- Student might not be enrolled in your course
-- Check they're signed in with correct account
-- Verify course is Active (not Archived)
+### No repositories found
+- Check the organization name is correct
+- Verify the student has accepted the assignment
+- Make sure they're signed in with the right GitHub account
 
-### Can't submit assignment
-- File must be saved first
-- Check assignment hasn't passed due date
-- Verify student has submission permissions
+### "No .blend file found"
+- The template repo may not have a .blend file
+- Check the assignment template repository
+
+### Auto-push not working
+- Check that the student has auto-push enabled (checkbox in the UI)
+- Verify they opened the file from the addon (not from File → Open)
+- Make sure they have write access to the repo
 
 ## Monitoring Student Progress
 
-- Use Google Classroom's normal interface to:
-  - View submissions
-  - Grade assignments
-  - Provide feedback
-  - Track late submissions
-
-- The add-on doesn't change how you grade, it just makes submission easier for students
+Since each student pushes to their own repo:
+1. **Check commit history** on GitHub to see when students saved
+2. **Pull their latest file** through the addon to review progress
+3. **Use GitHub's commit timestamps** to verify work was done on time
 
 ## Security Considerations
 
-### OAuth Credentials
-- OAuth credentials identify your application, not individual users
-- Each student still authenticates with their own Google account
-- Credentials can be safely shared with your class
-- If credentials are compromised, you can revoke and create new ones
+### Personal Access Tokens
+- Each person uses their own token
+- Tokens can be revoked at any time on GitHub
+- Tokens are stored locally on each user's computer
+- Never share tokens between users
 
 ### Student Privacy
-- Students authenticate with their own accounts
-- Students can revoke access anytime via Google Account settings
-- No student data is stored by the add-on beyond local authentication tokens
+- Students only see their own repos
+- Teachers see all repos in the organization (as org owners)
+- No data is sent to third parties
 
 ### Best Practices
-- Don't post credentials publicly on the internet
-- Share credentials only with enrolled students
-- Consider creating new credentials each semester/year
-- Inform students about what permissions they're granting
-
-## Support Resources
-
-### For Students
-- Direct them to `INSTALL_GUIDE.md` for detailed setup instructions
-- Create a FAQ document based on common issues in your class
-- Consider creating a video tutorial specific to your setup
-
-### For You
-- GitHub Issues: Report bugs or request features
-- Test everything before class starts
-- Keep backup credentials in case of issues
+- Have students revoke old tokens at the end of the semester
+- Use separate organizations for different classes/semesters
+- Don't store tokens in shared locations
 
 ## Tips for Success
 
-1. **Do a Test Run**: Complete the entire workflow yourself before class
-2. **Have Backup Plan**: Keep traditional submission method available initially
-3. **Start Simple**: Use for one assignment first, then expand
-4. **Get Feedback**: Ask students what works and what doesn't
-5. **Document Issues**: Note common problems to improve setup for next semester
+1. **Test First**: Complete the entire workflow yourself before class
+2. **Template Repos**: Always include a starter .blend file in the template
+3. **Keep It Simple**: Students just need to know: Open, Work, Save
+4. **Backup Plan**: Keep GitHub web access as a fallback
+5. **Start Early**: Set up the first week and troubleshoot issues together
+6. **Office Hours**: Offer extra help for students who struggle with setup
 
 ## Example Class Schedule
 
 ### Week 1
-- Install add-on (in class)
-- Test with a simple "hello world" assignment
-- Troubleshoot issues
+- Install add-on in class (10 min)
+- Test with a simple assignment
+- Troubleshoot any issues
 
 ### Week 2+
-- Use for all assignments
-- Students become familiar with workflow
-- Less time spent on submission logistics
+- Students use the add-on for all assignments
+- Workflow becomes second nature
+- More time for actual animation work!
 
 ## Questions?
 
-If you have questions or issues:
-1. Check `INSTALL_GUIDE.md` for detailed technical information
-2. Review this guide for teaching-specific tips
-3. Check GitHub Issues for similar problems
-4. Create a new issue with your specific question
+1. Check [INSTALL_GUIDE.md](INSTALL_GUIDE.md) for detailed setup
+2. Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues
+3. Open an issue on [GitHub](https://github.com/MrRoush/blender-addon/issues)
 
-Good luck with your animation class!
+Good luck with your animation course!

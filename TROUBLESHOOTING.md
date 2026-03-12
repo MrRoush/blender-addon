@@ -1,111 +1,73 @@
 # Troubleshooting Guide
 
-Common issues and solutions for the Google Classroom Blender Add-on.
+Common issues and solutions for the GitHub Classroom Blender Add-on.
 
 ## Installation Issues
-
-### Problem: "Google API libraries not installed"
-
-**Solution:**
-1. Install dependencies into Blender's Python:
-   ```bash
-   # Run the helper script
-   python install_dependencies.py
-   
-   # Or manually:
-   <blender_python> -m pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
-   ```
-2. Restart Blender
-3. Re-enable the add-on
-
-**Note**: You must use Blender's Python, not your system Python!
-
-### Problem: Can't find Blender's Python
-
-**Locations by platform:**
-- Windows: `C:\Program Files\Blender Foundation\Blender 4.5\4.5\python\bin\python.exe`
-- macOS: `/Applications/Blender.app/Contents/Resources/4.5/python/bin/python3.11`
-- Linux: `/usr/share/blender/4.5/python/bin/python3.11`
 
 ### Problem: Add-on doesn't appear in preferences
 
 **Solution:**
 1. Make sure you installed the folder, not a single file
-2. Check the folder name is `google_classroom_addon`
-3. Look in System category
+2. Check the folder name is `github_classroom_addon`
+3. Look in the **System** category
 4. Restart Blender
+
+### Problem: Add-on fails to enable
+
+**Solution:**
+1. Open Blender's system console (Window > Toggle System Console on Windows)
+2. Look for Python error messages
+3. Ensure you're running Blender 4.5 or later
+4. Try reinstalling the add-on
 
 ## Authentication Issues
 
-### Problem: "Credentials file not found"
+### Problem: "No token provided"
 
 **Solution:**
-1. Ensure file is named exactly `credentials.json` (not `.txt` or `.json.json`)
-2. Place in: `<addon_path>/google_classroom_addon/config/credentials.json`
-3. Check file permissions (should be readable)
-4. Verify JSON format is valid
+1. Create a Personal Access Token at [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Select the **repo** scope when creating the token
+3. Copy the token and paste it into the Token field
+4. Click Sign In
 
-### Problem: Browser doesn't open for authentication
-
-**Solution:**
-1. Check firewall settings
-2. Ensure port 8080 is not blocked
-3. Try running Blender as administrator/sudo temporarily
-4. Look for the authentication URL in Blender's console
-5. Copy URL manually to browser if needed
-
-### Problem: "Authentication failed" error
+### Problem: "Invalid token"
 
 **Causes:**
-- Invalid credentials.json file
-- OAuth consent screen not configured
-- Required APIs not enabled
-- Expired credentials
+- Token was typed incorrectly
+- Token has expired
+- Token was revoked
+- Token doesn't have the **repo** scope
 
 **Solution:**
-1. Verify Google Cloud project has:
-   - Classroom API enabled
-   - Drive API enabled
-   - OAuth consent screen configured
-2. Re-download credentials.json
-3. Delete `token.pickle` file and re-authenticate
-4. Check credentials match your Google Cloud project
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Check if your token is still active
+3. If not, create a new one with the **repo** scope
+4. Copy and paste carefully (no extra spaces)
 
-### Problem: "Access Denied" during OAuth
+### Problem: "Authentication failed"
 
 **Solution:**
-1. Ensure OAuth consent screen is published
-2. For school accounts: Must be "Internal" type
-3. Check user is in allowed domain/organization
-4. Verify app isn't blocked by administrator
+1. Check your internet connection
+2. Verify GitHub isn't experiencing an outage
+3. Try signing out and back in
+4. Delete the token file (`github_classroom_addon/config/github_token.json`) and re-authenticate
 
 ## Usage Issues
 
-### Problem: "No courses found"
+### Problem: No repositories found
 
 **Solution:**
-1. Verify you're enrolled in courses on Google Classroom
-2. Check courses are Active (not Archived)
-3. Try refreshing courses
-4. Ensure correct Google account is authenticated
-5. Check API permissions were granted during authentication
+1. Verify the organization name is correct (case-sensitive)
+2. Students: Make sure you've accepted the GitHub Classroom assignment
+3. Teachers: Make sure you're an owner/member of the organization
+4. Try clicking "Load My Assignments" or "Load Student Repos" again
 
-### Problem: "No assignments found"
-
-**Solution:**
-1. Verify course has assignments
-2. Check assignment state (must not be deleted/draft)
-3. Try refreshing assignments
-4. Ensure you selected a course first
-
-### Problem: Can't see .blend file in assignment
+### Problem: "No .blend file found" in a repository
 
 **Solution:**
-1. File must be attached via Google Drive
-2. File must have `.blend` extension
-3. File must be accessible to you
-4. Try refreshing assignments
-5. Check file permissions in Google Drive
+1. The repository may not have a .blend file yet
+2. Check that the template repo includes a .blend file in the root directory
+3. The add-on only checks the root directory of the repository
 
 ### Problem: Can't open assignment file
 
@@ -116,73 +78,67 @@ Common issues and solutions for the Google Classroom Blender Add-on.
 
 **Solution:**
 1. Check internet connection
-2. Verify you have permission to view the file
+2. Verify you have permission to access the repository
 3. Check free disk space in temp directory
-4. Try downloading file manually from Google Classroom first
+4. Try downloading the file manually from GitHub
 
-### Problem: Can't submit assignment
+### Problem: Auto-push not working
 
-**Common causes:**
-- File not saved
-- Assignment already submitted
-- Past due date
-- No submission permissions
+**Causes:**
+- Auto-push is disabled
+- File wasn't opened from the add-on
+- Not authenticated
 
 **Solution:**
-1. Save your file first (File > Save or Ctrl+S)
-2. Check assignment hasn't already been submitted
-3. Verify you're not past the due date
-4. Ensure you're enrolled as a student (not teacher)
-5. Check you selected the correct assignment
+1. Check that auto-push is enabled (checkbox in the Classroom panel)
+2. Open the file from the add-on (not File > Open)
+3. Verify you're signed in
+4. Check internet connection
+5. Try a manual push with "Save & Push to GitHub"
 
-### Problem: "Upload failed" when submitting
+### Problem: "Upload error" when pushing
 
 **Solution:**
 1. Check internet connection
-2. Verify file size isn't too large (Google Drive limits)
-3. Ensure Drive API permissions were granted
-4. Try submitting through Google Classroom directly first
-5. Check Google Drive storage quota
+2. Verify you have write access to the repository
+3. File may be too large for GitHub's API (limit: 100MB per file)
+4. Try pushing again — it may be a temporary network issue
 
 ## Performance Issues
 
-### Problem: Slow to load courses/assignments
+### Problem: Slow to load repositories
 
 **Solution:**
-- This is normal for first load
-- Subsequent loads should be faster
-- Larger classes take longer
-- Check your internet speed
+- This is normal for organizations with many repositories
+- Each repo is checked for .blend files, which adds time
+- Try on a faster internet connection
 
 ### Problem: Blender freezes during operation
 
 **Causes:**
-- Large file download
+- Large file download/upload
 - Slow network
 - API timeout
 
 **Solution:**
-- Wait for operation to complete
+- Wait for the operation to complete
 - Check network connection
 - Close and restart Blender if truly frozen
 
-## Permission Issues
+## Data Issues
 
-### Problem: "Insufficient permissions" error
-
-**Solution:**
-1. Sign out and sign in again
-2. During authentication, make sure to grant all requested permissions
-3. Delete `token.pickle` and re-authenticate
-4. Check OAuth scopes in credentials.json
-
-### Problem: Can't access teacher's files
+### Problem: Working file disconnected after reopening Blender
 
 **Solution:**
-1. Verify file sharing settings in Google Classroom
-2. File must be set to "Students can view"
-3. Check you're enrolled in the course
-4. Ask teacher to verify file permissions
+- This can happen if Blender was closed unexpectedly
+- Simply open the file from the add-on again
+- The add-on saves working file state in `config/working_file.json`
+
+### Problem: Repositories not showing latest changes
+
+**Solution:**
+- Click "Load My Assignments" or "Load Student Repos" to refresh
+- Repository data is fetched fresh each time you load
 
 ## Network Issues
 
@@ -190,8 +146,8 @@ Common issues and solutions for the Google Classroom Blender Add-on.
 
 **Solution:**
 1. Check internet connection
-2. Verify Google services aren't blocked by firewall
-3. Check if Google Classroom is experiencing outages
+2. Verify GitHub services aren't experiencing issues
+3. Check if GitHub is blocked by your network/firewall
 4. Try again in a few minutes
 
 ### Problem: Timeout errors
@@ -199,28 +155,7 @@ Common issues and solutions for the Google Classroom Blender Add-on.
 **Solution:**
 1. Check your internet speed
 2. Try on a different network
-3. Large files take longer to download
-4. Increase timeout if possible
-
-## Data Issues
-
-### Problem: Lost courses/assignments after restart
-
-**Causes:**
-- Authentication expired
-- Token deleted
-
-**Solution:**
-- Click "Refresh Courses" to reload
-- Sign in again if needed
-- Data is fetched from Google each time
-
-### Problem: Outdated assignment information
-
-**Solution:**
-- Click "Refresh Assignments" to update
-- Information is cached until refresh
-- Changes made in Google Classroom require refresh
+3. Large files take longer to upload/download
 
 ## Advanced Troubleshooting
 
@@ -230,50 +165,31 @@ Common issues and solutions for the Google Classroom Blender Add-on.
 2. Check console for error messages
 3. Look for Python tracebacks
 
-### Check Log Files
-
-Look for errors in:
-- Blender's system console
-- Terminal where Blender was launched
-- System logs
-
 ### Reset Add-on Completely
 
 1. Sign out from add-on
-2. Disable and remove add-on
-3. Delete `google_classroom_addon` folder
-4. Delete `token.pickle` file
+2. Disable and remove add-on in Blender preferences
+3. Delete the `github_classroom_addon` folder from Blender's addons directory
+4. Delete config files (`github_token.json`, `working_file.json`)
 5. Reinstall from scratch
 
-### Verify API Status
+### Check GitHub API Status
 
-Check Google's API status:
-- [Google Workspace Status](https://www.google.com/appsstatus)
-- Look for Classroom or Drive issues
-
-### Check Quota Limits
-
-Google APIs have usage quotas:
-1. Go to Google Cloud Console
-2. Check APIs & Services > Quotas
-3. Look for Classroom API usage
-4. Quota resets daily
+- [GitHub Status](https://www.githubstatus.com/) — Check if GitHub is experiencing issues
 
 ## Still Having Issues?
 
 If none of these solutions work:
 
 1. **Check existing GitHub issues**: Someone may have had the same problem
-2. **Create a new issue**: Include:
+2. **Create a new issue** with:
    - Blender version
    - Operating system
    - Error messages
    - Steps to reproduce
-   - Screenshots if relevant
-3. **Verify installation**: Try on a different computer to rule out local issues
+3. **Ask your teacher** — They may be able to help troubleshoot
 
 ## Getting Help
 
 - GitHub Issues: [Report a bug](https://github.com/MrRoush/blender-addon/issues)
-- Documentation: Check INSTALL_GUIDE.md and TEACHER_GUIDE.md
-- Google Classroom Help: [Google Support](https://support.google.com/edu/classroom)
+- Documentation: Check [INSTALL_GUIDE.md](INSTALL_GUIDE.md) and [TEACHER_GUIDE.md](TEACHER_GUIDE.md)
