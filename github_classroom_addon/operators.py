@@ -165,6 +165,10 @@ class GITHUB_OT_OpenFile(Operator):
         )
 
         if success:
+            # Save blend_file_name before open_mainfile frees the scene.
+            # Do NOT access props or repo_item after open_mainfile.
+            blend_file_name = repo_item.blend_file_name
+
             # Track working file for auto-push (students only)
             if props.role == 'STUDENT':
                 client.set_working_file(
@@ -174,9 +178,8 @@ class GITHUB_OT_OpenFile(Operator):
                 )
 
             bpy.ops.wm.open_mainfile(filepath=download_path)
-            # Note: scene properties reset after open_mainfile,
-            # but client state persists in memory
-            self.report({'INFO'}, f"Opened {repo_item.blend_file_name}")
+            # Scene properties are now freed; only use local variables
+            self.report({'INFO'}, f"Opened {blend_file_name}")
         else:
             props.error_message = error
             self.report({'ERROR'}, error)
